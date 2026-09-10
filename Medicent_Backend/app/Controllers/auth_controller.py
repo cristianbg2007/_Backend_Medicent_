@@ -15,11 +15,16 @@ class AuthController:
         if usuario is None:
             return jsonify({"message": "Credenciales Incorrectas"}), 401
 
+        
+        es_admin = AuthService.es_admin(usuario)
+        rol = "admin" if es_admin else "usuario"
+
         token = create_access_token(
             identity=str(usuario.idUsuario),
             additional_claims={
                 "nombre": usuario.nombre,
-                "apellido": usuario.apellido
+                "apellido": usuario.apellido,
+                "rol": rol                    
             }
         )
 
@@ -29,7 +34,8 @@ class AuthController:
                 "id": usuario.idUsuario,
                 "nombre": usuario.nombre,
                 "apellido": usuario.apellido,
-                "correo": usuario.correo
+                "correo": usuario.correo,
+                "rol": rol                    
             }
         }), 200
 
