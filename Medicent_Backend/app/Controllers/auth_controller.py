@@ -1,7 +1,11 @@
 from flask import request, jsonify
-from flask_jwt_extended import create_access_token # <-- 1. IMPORTAMOS LA FUNCIÓN DEL TOKEN
+from flask_jwt_extended import create_access_token
 from app.database.database import db, bcrypt
 from app.models.usuario import Usuario
+
+# IMPORTANTE: Asegúrate de que esta importación exista en tu proyecto, 
+# ya que tu compañero la usó para validar los roles.
+from app.services.auth_service import AuthService 
 
 class AuthController:
 
@@ -10,24 +14,21 @@ class AuthController:
         try:
             data = request.get_json()
 
-            # 1. Validar campos obligatorios básicos
             required_fields = ['nombre', 'apellido', 'documento', 'correo', 'telefono', 'fechaNacimiento', 'password', 'idTipoDocumento']
             for field in required_fields:
                 if not data or field not in data:
                     return jsonify({"error": f"El campo '{field}' es obligatorio."}), 400
 
-            # 2. Verificar si el usuario ya existe por correo o documento
             existing_user = Usuario.query.filter(
                 (Usuario.correo == data['correo']) | (Usuario.documento == data['documento'])
             ).first()
 
+            # --- AQUÍ ESTÁ LA PARTE DE TU CÓDIGO (HEAD) ---
             if existing_user:
                 return jsonify({"error": "El correo electrónico o el número de documento ya están registrados."}), 400
 
-            # 3. Cifrar la contraseña
             hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
 
-            # 4. Crear la instancia del nuevo usuario
             nuevo_usuario = Usuario(
                 nombre=data['nombre'],
                 apellido=data['apellido'],
@@ -39,7 +40,6 @@ class AuthController:
                 idTipoDocumento=data['idTipoDocumento']
             )
 
-            # 5. Guardar en la base de datos
             db.session.add(nuevo_usuario)
             db.session.commit()
 
@@ -68,16 +68,38 @@ class AuthController:
 
             if usuario and bcrypt.check_password_hash(usuario.password, data['password']):
                 
-                # 2. CREAMOS EL TOKEN (La llave de seguridad)
-                token_seguridad = create_access_token(identity=str(usuario.idUsuario))
-                
+                # --- AQUÍ ESTÁ EL CÓDIGO DE TU COMPAÑERO (INCOMING) ---
+                es_admin = AuthService.es_admin(usuario)
+                rol = "admin" if es_admin else "usuario"
+
+                token = create_access_token(
+                    identity=str(usuario.idUsuario),
+                    additional_claims={
+                        "nombre": usuario.nombre,
+                        "apellido": usuario.apellido,
+                        "rol": rol                    
+                    }
+                )
+
+                # Combinamos ambas respuestas para que el código de tu compañero 
+                # funcione, pero sin romper nuestra app de Flutter
                 return jsonify({
                     "message": "Inicio de sesión exitoso",
-                    "access_token": token_seguridad, # <-- 3. LO ENVIAMOS A FLUTTER
-                    "usuario": {
+                    "access_token": token,  # Para que funcione en Flutter
+                    "accessToken": token,   # Para que le funcione a tu compañero
+                    "usuario": {            # Nuestro objeto en Flutter
                         "id": usuario.idUsuario,
                         "correo": usuario.correo,
-                        "nombre": usuario.nombre
+                        "nombre": usuario.nombre,
+                        "apellido": usuario.apellido,
+                        "rol": rol
+                    },
+                    "user": {               # El objeto de tu compañero
+                        "id": usuario.idUsuario,
+                        "nombre": usuario.nombre,
+                        "apellido": usuario.apellido,
+                        "correo": usuario.correo,
+                        "rol": rol                    
                     }
                 }), 200
             else:
