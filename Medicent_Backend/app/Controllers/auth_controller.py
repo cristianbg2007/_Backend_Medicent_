@@ -2,10 +2,7 @@ from flask import request, jsonify
 from flask_jwt_extended import create_access_token
 from app.database.database import db, bcrypt
 from app.models.usuario import Usuario
-
-# IMPORTANTE: Asegúrate de que esta importación exista en tu proyecto, 
-# ya que tu compañero la usó para validar los roles.
-from app.services.auth_service import AuthService 
+from app.Services.auth_service import AuthService
 
 class AuthController:
 
