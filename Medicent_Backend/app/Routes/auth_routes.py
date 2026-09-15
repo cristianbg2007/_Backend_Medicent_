@@ -9,14 +9,18 @@ auth_bp = Blueprint(
     __name__
 )
 
+# Rutas de Autenticación
 auth_bp.route("/login", methods=["POST"])(AuthController.login)
-
 auth_bp.route("/register", methods=["POST"])(AuthController.register)
+
+# Rutas de Medicamentos
 auth_bp.route("/medicamentos", methods=["GET"])(MedicamentoController.get_medicamentos)
 auth_bp.route("/medicamentos", methods=["POST"])(MedicamentoController.crear_medicamento) 
 
-auth_bp.route("/tomas", methods=["GET"])(TomaController.get_tomas)        
+# Rutas de Tomas
+auth_bp.route("/tomas", methods=["GET"])(TomaController.get_tomas)          
 auth_bp.route("/tomas", methods=["POST"])(TomaController.crear_toma) 
 
+# Rutas de Biomarcadores
 auth_bp.route("/biomarcadores", methods=["GET"])(BiomarcadorController.get_biomarcadores)
 auth_bp.route("/biomarcadores", methods=["POST"])(BiomarcadorController.crear_biomarcador)
