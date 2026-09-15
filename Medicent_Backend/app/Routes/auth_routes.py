@@ -7,19 +7,6 @@ from app.Controllers.admin_controller import AdminController
 
 auth_bp = Blueprint("auth", __name__)
 
-<<<<<<< HEAD
-# Rutas de Autenticación
-auth_bp.route("/login", methods=["POST"])(AuthController.login)
-auth_bp.route("/register", methods=["POST"])(AuthController.register)
-
-# Rutas de Medicamentos
-auth_bp.route("/medicamentos", methods=["GET"])(MedicamentoController.get_medicamentos)
-auth_bp.route("/medicamentos", methods=["POST"])(MedicamentoController.crear_medicamento) 
-
-# Rutas de Tomas
-auth_bp.route("/tomas", methods=["GET"])(TomaController.get_tomas)          
-auth_bp.route("/tomas", methods=["POST"])(TomaController.crear_toma) 
-=======
 # ========== AUTENTICACIÓN ==========
 auth_bp.route("/login", methods=["POST"])(AuthController.login)
 auth_bp.route("/register", methods=["POST"])(AuthController.register)
@@ -30,9 +17,8 @@ auth_bp.route("/medicamentos", methods=["POST"])(MedicamentoController.crear_med
 
 auth_bp.route("/tomas", methods=["GET"])(TomaController.get_tomas)
 auth_bp.route("/tomas", methods=["POST"])(TomaController.crear_toma)
->>>>>>> aebbfe7866fe669eac86b443d9476967b19201f9
 
-# Rutas de Biomarcadores
+# ========== BIOMARCADORES ==========
 auth_bp.route("/biomarcadores", methods=["GET"])(BiomarcadorController.get_biomarcadores)
 auth_bp.route("/biomarcadores", methods=["POST"])(BiomarcadorController.crear_biomarcador)
 
