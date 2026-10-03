@@ -8,6 +8,6 @@ class Config:
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
     
     # Ruta estática para forzar la conexión limpia sin contraseña
-    SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:@localhost:3306/bmedicent"
+    SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:302005@localhost:3306/bmedicent"
     
     SQLALCHEMY_TRACK_MODIFICATIONS = False

@@ -7,11 +7,11 @@ from app.Controllers.admin_controller import AdminController
 
 auth_bp = Blueprint("auth", __name__)
 
-# ========== AUTENTICACIÓN ==========
+
 auth_bp.route("/login", methods=["POST"])(AuthController.login)
 auth_bp.route("/register", methods=["POST"])(AuthController.register)
 
-# ========== RUTAS NORMALES ==========
+
 auth_bp.route("/medicamentos", methods=["GET"])(MedicamentoController.get_medicamentos)
 auth_bp.route("/medicamentos", methods=["POST"])(MedicamentoController.crear_medicamento)
 

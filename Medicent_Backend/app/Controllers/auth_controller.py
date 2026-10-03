@@ -20,7 +20,7 @@ class AuthController:
                 (Usuario.correo == data['correo']) | (Usuario.documento == data['documento'])
             ).first()
 
-            # --- AQUÍ ESTÁ LA PARTE DE TU CÓDIGO (HEAD) ---
+            
             if existing_user:
                 return jsonify({"error": "El correo electrónico o el número de documento ya están registrados."}), 400
 
@@ -65,7 +65,7 @@ class AuthController:
 
             if usuario and bcrypt.check_password_hash(usuario.password, data['password']):
                 
-                # --- AQUÍ ESTÁ EL CÓDIGO DE TU COMPAÑERO (INCOMING) ---
+                
                 es_admin = AuthService.es_admin(usuario)
                 rol = "admin" if es_admin else "usuario"
 
@@ -78,20 +78,19 @@ class AuthController:
                     }
                 )
 
-                # Combinamos ambas respuestas para que el código de tu compañero 
-                # funcione, pero sin romper nuestra app de Flutter
+                
                 return jsonify({
                     "message": "Inicio de sesión exitoso",
-                    "access_token": token,  # Para que funcione en Flutter
-                    "accessToken": token,   # Para que le funcione a tu compañero
-                    "usuario": {            # Nuestro objeto en Flutter
+                    "access_token": token,  
+                    "accessToken": token,   
+                    "usuario": {            
                         "id": usuario.idUsuario,
                         "correo": usuario.correo,
                         "nombre": usuario.nombre,
                         "apellido": usuario.apellido,
                         "rol": rol
                     },
-                    "user": {               # El objeto de tu compañero
+                    "user": {               
                         "id": usuario.idUsuario,
                         "nombre": usuario.nombre,
                         "apellido": usuario.apellido,
